@@ -1,1 +1,13 @@
-<p>log works!</p>
+<h2>Logs</h2>
+<table>
+    <tr>
+    <th>Timestamp</th>
+    <th>Level</th>
+    <th>Message</th>
+    </tr>
+    <tr *ngFor="let log of logs">
+    <td>{{ log.timestamp }}</td>
+    <td>{{ log.level }}</td>
+    <td>{{ log.message }}</td>
+    </tr>
+</table>
