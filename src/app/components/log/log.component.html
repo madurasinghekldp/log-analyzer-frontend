@@ -3,38 +3,50 @@
   <span>Log Analyzer</span>
 </mat-toolbar>
 
-<div style="padding: 20px;">
-  <mat-card>
-    <mat-card-title>Logs</mat-card-title>
+<div class="filters">
+  <!-- Global Search -->
+  <mat-form-field appearance="fill">
+    <mat-label>Search logs</mat-label>
+    <input matInput (keyup)="applyGlobalFilter($event)" placeholder="Search by any field">
+  </mat-form-field>
 
-    <mat-progress-spinner
-      *ngIf="loading"
-      mode="indeterminate"
-      color="accent">
-    </mat-progress-spinner>
-
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" *ngIf="!loading">
-
-      <!-- Timestamp Column -->
-      <ng-container matColumnDef="timestamp">
-        <th mat-header-cell *matHeaderCellDef> Timestamp </th>
-        <td mat-cell *matCellDef="let element"> {{element.timestamp}} </td>
-      </ng-container>
-
-      <!-- Level Column -->
-      <ng-container matColumnDef="level">
-        <th mat-header-cell *matHeaderCellDef> Level </th>
-        <td mat-cell *matCellDef="let element"> {{element.level}} </td>
-      </ng-container>
-
-      <!-- Message Column -->
-      <ng-container matColumnDef="message">
-        <th mat-header-cell *matHeaderCellDef> Message </th>
-        <td mat-cell *matCellDef="let element"> {{element.message}} </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-  </mat-card>
+  <!-- Log Level Filter -->
+  <mat-form-field appearance="fill">
+    <mat-label>Log Level</mat-label>
+    <mat-select (selectionChange)="filterByLevel($event.value)">
+      <mat-option value="">All</mat-option>
+      <mat-option value="ERROR">Error</mat-option>
+      <mat-option value="WARN">Warn</mat-option>
+      <mat-option value="INFO">Info</mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
+
+<!-- Table -->
+<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+  <!-- Timestamp -->
+  <ng-container matColumnDef="timestamp">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Timestamp</th>
+    <td mat-cell *matCellDef="let log">{{ log.timestamp }}</td>
+  </ng-container>
+
+  <!-- Level -->
+  <ng-container matColumnDef="level">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Level</th>
+    <td mat-cell *matCellDef="let log">{{ log.level }}</td>
+  </ng-container>
+
+  <!-- Message -->
+  <ng-container matColumnDef="message">
+    <th mat-header-cell *matHeaderCellDef>Message</th>
+    <td mat-cell *matCellDef="let log">{{ log.message }}</td>
+  </ng-container>
+
+  <!-- Header & Row -->
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<!-- Pagination -->
+<mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+
