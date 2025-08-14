@@ -15,6 +15,7 @@ import { MatSort } from '@angular/material/sort';
 export class LogComponent implements OnInit {
   displayedColumns: string[] = ['timestamp', 'level', 'message'];
   dataSource = new MatTableDataSource<LogEntry>([]);
+  logs: string[] = [];
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -22,6 +23,12 @@ export class LogComponent implements OnInit {
   constructor(private logService: LogService) {}
 
   ngOnInit() {
+    const eventSource = new EventSource('http://localhost:8080/logs/stream');
+    eventSource.onmessage = (event) => {
+      this.logs.push(event.data);
+      // Optionally trigger sorting/filtering here
+    };
+    
     this.logService.getLogs().subscribe(data => {
       this.dataSource.data = data;
     });
