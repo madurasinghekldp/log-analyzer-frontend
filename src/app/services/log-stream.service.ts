@@ -1,7 +1,11 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
-import { LogEntry } from './log.service';
 
+export interface LogEntry {
+  timestamp: string;
+  level: string;
+  message: string;
+}
 @Injectable({
   providedIn: 'root'
 })
