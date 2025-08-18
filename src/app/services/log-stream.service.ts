@@ -2,6 +2,7 @@ import { Injectable, NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
 
 export interface LogEntry {
+  id: string;
   timestamp: string;
   level: string;
   message: string;
