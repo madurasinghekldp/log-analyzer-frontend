@@ -17,6 +17,8 @@ export class LogChartComponent implements OnInit {
     { level: 'ERROR', count: 0 }
   ];
 
+  private svg!: d3.Selection<SVGSVGElement, unknown, null, undefined>;
+
   constructor(private el: ElementRef,private streamService: LogStreamService,private logService: LogService) {}
 
   ngOnInit(): void {
@@ -37,18 +39,18 @@ export class LogChartComponent implements OnInit {
 
   private drawChart(): void {
     const element = this.el.nativeElement.querySelector('#chart');
-    const svg = d3.select(element).append('svg').attr('width', 400).attr('height', 300);
+    this.svg = d3.select(element).append('svg').attr('width', 400).attr('height', 300);
 
     const x = d3.scaleBand().domain(this.data.map(d => d.level)).range([0, 400]).padding(0.2);
-    svg.append('g')
+    this.svg.append('g')
           .attr('transform', 'translate(0,300)')
           .call(d3.axisBottom(x));
 
-    svg.append('g')
+    this.svg.append('g')
       .attr('class', 'y-axis')
       .call(d3.axisLeft(d3.scaleLinear().domain([0, 10]).range([300, 0])));
 
-    svg.selectAll('rect')
+    this.svg.selectAll('rect')
       .data(this.data)
       .enter()
       .append('rect')
@@ -59,20 +61,13 @@ export class LogChartComponent implements OnInit {
       .attr('fill', '#3f51b5');
   }
 
-  // Call this when SSE receives new logs
-  updateCounts(level: string): void {
-    const entry = this.data.find(d => d.level === level);
-    if (entry) entry.count++;
-    this.redraw();
-  }
-
   private redraw(): void {
-    const svg = d3.select('svg');
+    //const svg = d3.select('svg');
     const y = d3.scaleLinear().domain([0, d3.max(this.data, d => d.count) || 10]).range([300, 0]);
 
-    svg.select<SVGGElement>('.y-axis').call(d3.axisLeft(y));
+    this.svg.select<SVGGElement>('.y-axis').call(d3.axisLeft(y));
 
-    svg.selectAll('rect')
+    this.svg.selectAll('rect')
       .data(this.data)
       .transition()
       .duration(300)
