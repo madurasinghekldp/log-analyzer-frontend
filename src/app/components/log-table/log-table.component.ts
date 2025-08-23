@@ -19,7 +19,7 @@ export class LogTableComponent implements OnInit,AfterViewInit  {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private stream: LogStreamService,private logService: LogService) {}
+  constructor(private streamService: LogStreamService,private logService: LogService) {}
 
   ngOnInit() {
 
@@ -27,7 +27,7 @@ export class LogTableComponent implements OnInit,AfterViewInit  {
       this.dataSource.data = data;
     });
     // Start listening to live stream
-    this.stream.stream().subscribe(log => {
+    this.streamService.stream().subscribe(log => {
       // Append new log to the top (optional)
       const data = this.dataSource.data;
       data.unshift(log);
